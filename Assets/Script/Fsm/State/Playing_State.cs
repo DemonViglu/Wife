@@ -17,7 +17,8 @@ public class Playing_State : IState
     }
     void IState.OnEnter()
     {
-        DialogManager.instance.BreakThrough();
+        //DialogManager.instance.BreakThrough();
+        DialogSystemManager.instance.ClearMissionRightNow();
         Debug.Log("Playing_Enter");
         parameter.ball.BeginToShoot();
         GameManager.instance.Shooting();
@@ -35,20 +36,27 @@ public class Playing_State : IState
             {
                 //ÄãÕæ°ô°ô
                 //if (DialogManager.instance.isOnPlay) return;
-                DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 1);
+                //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 1);
+                DialogSystemManager.instance.AddMissionSO(1);
                 parameter.emotionManager.ChangeEmotionXP(10);
                 parameter.playerImageManager.ChangeImage(ImageTpye.wow);
             }
             else
             {
                 //ÎØÎØÎØ
-                DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 2);
+                //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 2);
+                DialogSystemManager.instance.AddMissionSO(2);
                 parameter.playerImageManager.ChangeImage(ImageTpye.happy);
             }
             parameter.ball.ResetGame();
         }
-        if (DialogManager.instance.JustFinishedPlay() && parameter.ball.HasPlayed())
-        {
+        //if (DialogManager.instance.JustFinishedPlay() && parameter.ball.HasPlayed())
+        //{
+        //    parameter.ball.CloseScoreTap();
+        //    manager.TransitionState(StateType.Idle);
+        //    parameter.playerImageManager.ChangeImage(ImageTpye.what);
+        //}
+        if (DialogSystemManager.instance.JustFinishPlay() && parameter.ball.HasPlayed()) {
             parameter.ball.CloseScoreTap();
             manager.TransitionState(StateType.Idle);
             parameter.playerImageManager.ChangeImage(ImageTpye.what);

@@ -9,7 +9,7 @@ using UnityEngine.XR;
 
 public enum PlayMode
 {
-    Shooting, Gifting, Chat
+    Shooting, Gifting, Chat,ChatWithGPT
         //knowing that i'm the stupid gay, shooot is play, gift is love, chat is idle;
 }
 public class GameManager : MonoBehaviour
@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviour
     {
         DragWife();
     }
+
+    #region ChangeModeInterface
     public void LoadGame(PlayMode playMode)
     {
         instance.currentGame = playMode;
@@ -57,6 +59,13 @@ public class GameManager : MonoBehaviour
     {
         instance.currentGame = PlayMode.Chat;
     }
+
+    public void ChatWithGPT()
+    {
+        instance.currentGame=PlayMode.ChatWithGPT;
+    }
+    #endregion
+
 
     private bool isDrag;
     public Transform playerTrans;

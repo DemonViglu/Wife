@@ -36,6 +36,10 @@ public class Idle_State :IState
         {
             manager.TransitionState(StateType.Love);
         }
+        if (GameManager.instance.currentGame == PlayMode.ChatWithGPT)
+        {
+            manager.TransitionState(StateType.Chat);
+        }
         AutoChat();
         HurtWife();
     }
@@ -62,15 +66,18 @@ public class Idle_State :IState
 
         if (parameter.emotionManager.GetEmotionXP() <= 5)
         {
-            DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 5);
+            //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 5);
+            DialogSystemManager.instance.AddMissionSO(5);
         }
         else if (parameter.emotionManager.GetEmotionXP()>=80)
         {
-            DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 6);
+            //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 6);
+            DialogSystemManager.instance.AddMissionSO(6);
         }
         else
         {
-            DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 0);
+            //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 0);
+            DialogSystemManager.instance.AddMissionSO(0);
         }
         timeToBegin = -200;
     }
@@ -82,7 +89,8 @@ public class Idle_State :IState
             if (DialogManager.instance.isOnPlay) return;
             MouseInputManager.instance.ResetClickCount();
             parameter.emotionManager.ChangeEmotionXP(-20);
-            DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 4);
+            //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 4);
+            DialogSystemManager.instance.AddMissionSO(4);
         }
     }
 }

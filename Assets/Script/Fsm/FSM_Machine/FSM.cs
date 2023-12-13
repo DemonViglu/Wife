@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public enum StateType
 { 
-    Idle, Playing,Love
+    Idle, Playing,Love,Chat
 }
 
 [Serializable]
@@ -17,19 +17,21 @@ public class Parameter
     public DialogSetting dialogSetting;
     public EmotionUIManageer emotionManager;
     public PlayerImageManager playerImageManager;
+    public GameObject ChatComponent;
 }
 
 
 public class FSM : MonoBehaviour
 {
     public Parameter parameter;
-    private IState currentState;
+    public IState currentState;
     private Dictionary<StateType,IState> states=new Dictionary<StateType,IState>();
     void Start()
     {
         states.Add(StateType.Idle, new Idle_State(this));
         states.Add(StateType.Playing, new Playing_State(this));
         states.Add(StateType.Love, new Love_State(this));
+        states.Add(StateType.Chat, new Chat_State(this));
 
         TransitionState(StateType.Idle);
     }

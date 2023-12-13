@@ -52,7 +52,6 @@ public class DialogManager : MonoBehaviour
     #endregion
     private void Start()
     {
-        //GetTextFromFile(textFile);
         loadFileIndex = -1;
         index = 0;
         StartCoroutine(LoadFuck());
@@ -72,7 +71,9 @@ public class DialogManager : MonoBehaviour
     //当前是否在输入字符，选择快速码字
     private bool isOnCoroutine = false;
     private bool cancelTyping = false;
-    public void TextCharge()
+
+    #region Two Charge
+    private void TextCharge()
     {
         if (index == textList.Count)
         {
@@ -92,22 +93,13 @@ public class DialogManager : MonoBehaviour
         }
             StartCoroutine(SetTextUI());
     }
-    public void UICharge()
+    private void UICharge()
     {
         if (!panel.activeSelf) panel.SetActive(true);
     }
+    #endregion
 
-    private void GetTextFromFile(TextAsset file)
-    {
-        textList.Clear();
-        index = 0;
-
-        var lineData= file.text.Split('\n');
-        foreach(var line in lineData)
-        {
-            textList.Add(line);
-        }
-    }
+    //get Text from file and load them into the textList
 
     IEnumerator SetTextUI()
     {
@@ -136,11 +128,18 @@ public class DialogManager : MonoBehaviour
         cancelTyping = false;
     }
 
-    //当前是否正在播放对话,mua的，当初逻辑写的一坨，这里很大便
+    /// <summary>
+    /// 当前是否正在播放对话,mua的，当初逻辑写的一坨，这里很大便
+    /// </summary>
     public bool isOnPlay=false;
 
-    //暴露给外界是否当前被占用，以及自动播放列表对话以清空列表
+
+    /// <summary>
+    /// 暴露给外界是否当前被占用，以及自动播放列表对话以清空列表
+    /// </summary>
     public bool isBusy;
+
+    #region autoPlaytheFile
     IEnumerator LoadFuck()
     {
         while (true)
@@ -155,18 +154,6 @@ public class DialogManager : MonoBehaviour
         }
 
     }
-
-
-    //pre load 给外界暴露用于添加所需要播放的对话
-    public List<int> fileToBeRead = new List<int>();
-    private List<float> preloadTimeGap = new List<float>();
-    public void PreLoadTheFile(float timeGap,int fileIndex)
-    {
-        //if (fileToBeRead.Contains(fileIndex)||fileIndex==loadFileIndex) return;
-        isBusy = true;
-        fileToBeRead.Add(fileIndex);
-        preloadTimeGap.Add(timeGap);
-    }
     private void AutoPlayAllTheFile(float timeGap, int fileIndex)
     {
         if (isOnPlay || JustFinishedPlay())
@@ -179,22 +166,42 @@ public class DialogManager : MonoBehaviour
         loadFileIndex = fileIndex;
         StartCoroutine("AutoPlayAllTheFile_", timeGap);
     }
+    private void GetTextFromFile(TextAsset file)
+    {
+        textList.Clear();
+        index = 0;
+
+        var lineData = file.text.Split('\n');
+        foreach (var line in lineData)
+        {
+            textList.Add(line);
+        }
+    }
+
     IEnumerator AutoPlayAllTheFile_(float timeGap)
     {
-        while(true)
+        while (true)
         {
-            if (isOnCoroutine)yield return new WaitForSeconds(1);
+            if (isOnCoroutine) yield return new WaitForSeconds(1);
             //UnityEngine. Debug.Log(Time.time);
-            PlayNextSentence();
+            UICharge();
+            TextCharge();
             yield return new WaitForSeconds(timeGap);
         }
     }
-    public void PlayNextSentence()
+    #endregion
+
+    //pre load 给外界暴露用于添加所需要播放的对话
+    public List<int> fileToBeRead = new List<int>();
+    private List<float> preloadTimeGap = new List<float>();
+    public void PreLoadTheFile(float timeGap,int fileIndex)
     {
-        if (isOnCoroutine) return;
-        UICharge();
-        TextCharge();
+        //timeGap is the time between the sentence;
+        isBusy = true;
+        fileToBeRead.Add(fileIndex);
+        preloadTimeGap.Add(timeGap);
     }
+
 
     //给外界的调用函数，检测是否刚刚播放完一段对话，，清空对话预备文件，，强行中断当前对话
     public float edgeTimeSet;
@@ -205,12 +212,15 @@ public class DialogManager : MonoBehaviour
         return false;
     }
 
+
+    //清空当前所需要播放的列表等
     public void ReFreshTheLoadList()
     {
         fileToBeRead.Clear();
         preloadTimeGap.Clear();
     }
 
+    //强行中断当前对话，并重置所有状态
     public void BreakThrough()
     {
         panel.SetActive(false);
@@ -222,4 +232,7 @@ public class DialogManager : MonoBehaviour
         index = 0;
         return;
     }
+
+
+
 }

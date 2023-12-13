@@ -36,15 +36,22 @@ public class Love_State : IState
         {
             parameter.playerImageManager.ChangeImage(ImageTpye.shy);
             EnvironmentManager.instance.FlowerBegin();
-            DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 3);
+            //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 3);
+            DialogSystemManager.instance.AddMissionSO(3);
             parameter.emotionManager.ChangeEmotionXP(50);
             if (parameter.emotionManager.GetEmotionXP() >= 80)
             {
-                DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 6);
+                //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 6);
+                DialogSystemManager.instance.AddMissionSO(6);
             }
         }
-        if (DialogManager.instance.JustFinishedPlay())
-        {
+        //if (DialogManager.instance.JustFinishedPlay())
+        //{
+        //    manager.TransitionState(StateType.Idle);
+        //    parameter.playerImageManager.ChangeImage(ImageTpye.what);
+
+        //}
+        if (DialogSystemManager.instance.JustFinishPlay()) {
             manager.TransitionState(StateType.Idle);
             parameter.playerImageManager.ChangeImage(ImageTpye.what);
 

@@ -17,8 +17,8 @@ public class Playing_State : IState
     }
     void IState.OnEnter()
     {
-        //DialogManager.instance.BreakThrough();
         DialogSystemManager.instance.ClearMissionRightNow();
+        DialogSystemManager.instance.missionEventHandler._OnEveryMissionEnd += OnBallGameEnd;
         Debug.Log("Playing_Enter");
         parameter.ball.BeginToShoot();
         GameManager.instance.Shooting();
@@ -35,8 +35,6 @@ public class Playing_State : IState
             if (parameter.ball.score >= 9)
             {
                 //ÄãÕæ°ô°ô
-                //if (DialogManager.instance.isOnPlay) return;
-                //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 1);
                 DialogSystemManager.instance.AddMissionSO(1);
                 parameter.emotionManager.ChangeEmotionXP(10);
                 parameter.playerImageManager.ChangeImage(ImageTpye.wow);
@@ -44,28 +42,31 @@ public class Playing_State : IState
             else
             {
                 //ÎØÎØÎØ
-                //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 2);
                 DialogSystemManager.instance.AddMissionSO(2);
                 parameter.playerImageManager.ChangeImage(ImageTpye.happy);
             }
             parameter.ball.ResetGame();
         }
-        //if (DialogManager.instance.JustFinishedPlay() && parameter.ball.HasPlayed())
-        //{
+
+        //if (DialogSystemManager.instance.JustFinishPlay() && parameter.ball.HasPlayed()) {
         //    parameter.ball.CloseScoreTap();
         //    manager.TransitionState(StateType.Idle);
         //    parameter.playerImageManager.ChangeImage(ImageTpye.what);
         //}
-        if (DialogSystemManager.instance.JustFinishPlay() && parameter.ball.HasPlayed()) {
-            parameter.ball.CloseScoreTap();
-            manager.TransitionState(StateType.Idle);
-            parameter.playerImageManager.ChangeImage(ImageTpye.what);
-        }
         //when you won the game, changing the player's state and change tne play mode;
     }
 
     void IState.OnExit()
     {
+        DialogSystemManager.instance.missionEventHandler._OnEveryMissionEnd -= OnBallGameEnd;
         Debug.Log("Playing_Exit");
+    }
+
+    private void OnBallGameEnd(int a) {
+        if(a==1||a==2) {
+            parameter.ball.CloseScoreTap();
+            manager.TransitionState(StateType.Idle);
+            parameter.playerImageManager.ChangeImage(ImageTpye.what);
+        }
     }
 }

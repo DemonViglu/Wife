@@ -47,13 +47,6 @@ public class Playing_State : IState
             }
             parameter.ball.ResetGame();
         }
-
-        //if (DialogSystemManager.instance.JustFinishPlay() && parameter.ball.HasPlayed()) {
-        //    parameter.ball.CloseScoreTap();
-        //    manager.TransitionState(StateType.Idle);
-        //    parameter.playerImageManager.ChangeImage(ImageTpye.what);
-        //}
-        //when you won the game, changing the player's state and change tne play mode;
     }
 
     void IState.OnExit()
@@ -61,7 +54,10 @@ public class Playing_State : IState
         DialogSystemManager.instance.missionEventHandler._OnEveryMissionEnd -= OnBallGameEnd;
         Debug.Log("Playing_Exit");
     }
-
+    /// <summary>
+    /// this Ending is base on the dialog finished;
+    /// </summary>
+    /// <param name="a"></param>
     private void OnBallGameEnd(int a) {
         if(a==1||a==2) {
             parameter.ball.CloseScoreTap();

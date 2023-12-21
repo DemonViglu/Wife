@@ -17,7 +17,7 @@ public class Balloon : MonoBehaviour
         if (rb.bodyType ==RigidbodyType2D.Static)return;
         rb.velocity=new Vector2(rb.velocity.x,0);
         rb.bodyType = RigidbodyType2D.Static;
-        GetComponentInParent<Ball>().score++;
+        GetComponentInParent<BallGameManager>().score++;
     }
 
     public void _Destroy()

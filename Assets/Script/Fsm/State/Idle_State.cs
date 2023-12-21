@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-
+using DemonViglu.MouseInput;
 public class Idle_State :IState
 {
 
@@ -20,7 +20,7 @@ public class Idle_State :IState
         Debug.Log("Idle_Enter");
         GameManager.instance.Chat();
 
-        timeToBegin =(float) parameter.dialogSetting.TheTimeToChat();
+        timeToBegin = parameter.TimeGapFromIdle;
     }
 
     void IState.OnUpdate()
@@ -54,29 +54,26 @@ public class Idle_State :IState
         if (timeToBegin > 0)
         {
             timeToBegin -= Time.deltaTime;
-            if (DialogManager.instance.isBusy) timeToBegin = parameter.dialogSetting.TheTimeToChat();
+            if (DialogManager.instance.isBusy) timeToBegin = parameter.TimeGapFromIdle;
             return;
         }
         else if (!DialogManager.instance.isBusy && timeToBegin < -100)
         {
-            timeToBegin = parameter.dialogSetting.TheTimeToChat();
+            timeToBegin = parameter.TimeGapFromIdle;
             return;
         }
         else if (timeToBegin < -100) return;
 
         if (parameter.emotionManager.GetEmotionXP() <= 5)
         {
-            //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 5);
             DialogSystemManager.instance.AddMissionSO(5);
         }
         else if (parameter.emotionManager.GetEmotionXP()>=80)
         {
-            //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 6);
             DialogSystemManager.instance.AddMissionSO(6);
         }
         else
         {
-            //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 0);
             DialogSystemManager.instance.AddMissionSO(0);
         }
         timeToBegin = -200;
@@ -89,7 +86,6 @@ public class Idle_State :IState
             if (DialogManager.instance.isOnPlay) return;
             MouseInputManager.instance.ResetClickCount();
             parameter.emotionManager.ChangeEmotionXP(-20);
-            //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 4);
             DialogSystemManager.instance.AddMissionSO(4);
         }
     }

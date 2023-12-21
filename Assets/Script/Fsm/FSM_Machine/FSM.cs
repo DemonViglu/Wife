@@ -13,11 +13,12 @@ public enum StateType
 public class Parameter
 {
     public Text text;
-    public Ball ball;
-    public DialogSetting dialogSetting;
+    public BallGameManager ball;
     public EmotionUIManageer emotionManager;
     public PlayerImageManager playerImageManager;
     public GameObject ChatComponent;
+
+    public float TimeGapFromIdle;
 }
 
 
@@ -51,16 +52,6 @@ public class FSM : MonoBehaviour
         currentState = states[state];
         currentState.OnEnter();
     }
-
-
-
-
-
-
-
-
-
-
     private void TextToDebug()
     {
         parameter.text.text=Input.mousePosition.x.ToString()+"    "+Input.mousePosition.y.ToString();

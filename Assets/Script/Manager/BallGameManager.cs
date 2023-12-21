@@ -3,13 +3,17 @@ using System.Collections.Generic;
 //using System.Data.Common;
 using UnityEngine;
 using UnityEngine.UI;
-public class Ball : MonoBehaviour
+using System;
+using UnityEditor.PackageManager;
+using DemonViglu.MouseInput;
+
+public class BallGameManager : MonoBehaviour
 {
     // Start is called before the first frame update
-    public GameObject shot1;
-    public GameObject shot2;
-    public GameObject shot3;
-    public GameObject balloon;
+    [SerializeField]private GameObject shot1;
+    [SerializeField]private GameObject shot2;
+    [SerializeField]private GameObject shot3;
+    [SerializeField]private GameObject balloon;
     public int balloonsNum;
     public float balloonsV;
     public float shootingSpeed;
@@ -19,7 +23,9 @@ public class Ball : MonoBehaviour
     public int score;
     public bool finished;
     public List<GameObject> ballList=new List<GameObject>();
+    public event Action OnGameFinished;
 
+    private RaycastHit2D hitInfo;
     private void Start()
     {
         hasPlay = false;
@@ -28,14 +34,24 @@ public class Ball : MonoBehaviour
             ballList.Add(Instantiate(balloon, shot1.transform.position, balloon.transform.rotation,this.transform));
             ballList[i].SetActive(false);
         }
+        hitInfo=new RaycastHit2D();
     }
     private void Update()
     {
-        for(int i=0;i<ballList.Count;i++)
-        {
-            if (ballList[i].GetComponent<Rigidbody2D>().velocity.y<0)
-            {
-                if (!ballList[i].GetComponent<Animator>().GetBool("boom"))ballList[i].SetActive(false);
+        GameLogic();
+    }
+
+    private void GameLogic() {
+        hitInfo = MouseInputManager.instance.mouseHitInfo;
+        if (!hitInfo) return;
+        if (Input.GetMouseButtonDown(0) && hitInfo.collider.transform.CompareTag("Ball")) {
+            hitInfo.transform.gameObject.GetComponent<Animator>().SetBool("boom", true);
+            hitInfo.transform.gameObject.GetComponent<Balloon>().Idle();
+            text.text = hitInfo.transform.parent.gameObject.GetComponent<BallGameManager>().score.ToString();
+        }
+        for (int i = 0; i < ballList.Count; i++) {
+            if (ballList[i].GetComponent<Rigidbody2D>().velocity.y < 0) {
+                if (!ballList[i].GetComponent<Animator>().GetBool("boom")) ballList[i].SetActive(false);
             }
         }
     }
@@ -46,7 +62,7 @@ public class Ball : MonoBehaviour
         text.gameObject.SetActive(true);
         text.text = "0";
         score = 0;
-        StartCoroutine(ShootBalloon());
+        StartCoroutine("ShootBalloon");
     }
     public IEnumerator ShootBalloon()
     {
@@ -78,6 +94,7 @@ public class Ball : MonoBehaviour
     {
         finished=true;
         hasPlay = true;
+        OnGameFinished?.Invoke();
     }
 
     public void CloseScoreTap()

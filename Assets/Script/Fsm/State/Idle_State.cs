@@ -5,7 +5,6 @@ using UnityEngine;
 using DemonViglu.MouseInput;
 public class Idle_State :IState
 {
-
     private FSM manager;
     private Parameter parameter;
 
@@ -18,34 +17,20 @@ public class Idle_State :IState
     void IState.OnEnter()
     {
         Debug.Log("Idle_Enter");
-        GameManager.instance.Chat();
-
+        InitialButtonEvent();
         timeToBegin = parameter.TimeGapFromIdle;
     }
 
     void IState.OnUpdate()
     {
         parameter.text.text = "Idle";
-
-        if(GameManager.instance.currentGame==PlayMode.Shooting)
-        {
-            manager.TransitionState(StateType.Playing);
-            //GameManager.instance.currentGame = PlayMode.none;
-        }
-        if (GameManager.instance.currentGame == PlayMode.Gifting)
-        {
-            manager.TransitionState(StateType.Love);
-        }
-        if (GameManager.instance.currentGame == PlayMode.ChatWithGPT)
-        {
-            manager.TransitionState(StateType.Chat);
-        }
         AutoChat();
         HurtWife();
     }
 
     void IState.OnExit()
     {
+        DeButtonEvent();
         Debug.Log("Idle_Exit");
     }
 
@@ -54,12 +39,12 @@ public class Idle_State :IState
         if (timeToBegin > 0)
         {
             timeToBegin -= Time.deltaTime;
-            if (DialogManager.instance.isBusy) timeToBegin = parameter.TimeGapFromIdle;
+            if (DialogSystemManager.instance.IsOnMission()) timeToBegin = parameter.TimeGapFromIdle;
             return;
         }
-        else if (!DialogManager.instance.isBusy && timeToBegin < -100)
+        else if (!DialogSystemManager.instance.IsOnMission() && timeToBegin < -100)
         {
-            timeToBegin = parameter.TimeGapFromIdle;
+            timeToBegin = parameter.TimeGapFromIdle+Random.Range(-parameter.TimeGapRandomRange/2,parameter.TimeGapRandomRange/2);
             return;
         }
         else if (timeToBegin < -100) return;
@@ -83,10 +68,43 @@ public class Idle_State :IState
     {
         if(Input.GetMouseButtonDown(0)&&MouseInputManager.instance.clickCounts>=3)
         {
-            if (DialogManager.instance.isOnPlay) return;
+            if (DialogSystemManager.instance.IsOnMission()) return;
             MouseInputManager.instance.ResetClickCount();
             parameter.emotionManager.ChangeEmotionXP(-20);
             DialogSystemManager.instance.AddMissionSO(4);
         }
     }
+
+
+    private void InitialButtonEvent() {
+        parameter.menuControllor.buttons[0].onClick.AddListener(ToPlay);
+        parameter.menuControllor.buttons[1].onClick.AddListener(ToLove);
+        parameter.menuControllor.buttons[3].onClick.AddListener(ToChat);
+    }
+
+    private void DeButtonEvent() {
+        parameter.menuControllor.buttons[0].onClick.RemoveListener(ToPlay);
+        parameter.menuControllor.buttons[1].onClick.RemoveListener(ToLove);
+        parameter.menuControllor.buttons[3].onClick.RemoveListener(ToChat);
+    }
+
+    private void ToPlay() {
+        if (manager.currentStateType != StateType.Idle) return;
+        if (DialogSystemManager.instance.IsOnMission()) { return; }
+        manager.TransitionState(StateType.Playing);
+    }
+
+    private void ToLove() {
+        if (manager.currentStateType != StateType.Idle) return;
+        if (DialogSystemManager.instance.IsOnMission()) { return; }
+        manager.TransitionState(StateType.Love);
+    }
+
+    private void ToChat() {
+        if (manager.currentStateType != StateType.Idle) return;
+        if (DialogSystemManager.instance.IsOnMission()) { return; }
+        manager.TransitionState(StateType.Chat);
+    }
+
+
 }

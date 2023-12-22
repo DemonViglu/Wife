@@ -353,7 +353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 610b74fc4a1ea5043995acfba1cbbc89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentGame: 2
+  playerManager: {fileID: 358406771}
   playerTrans: {fileID: 1953739816}
 --- !u!1 &135991751
 GameObject:
@@ -851,7 +851,10 @@ MonoBehaviour:
     emotionManager: {fileID: 400221825}
     playerImageManager: {fileID: 1947713095}
     ChatComponent: {fileID: 1760035998}
-    TimeGapFromIdle: 60
+    menuControllor: {fileID: 400221824}
+    TimeGapFromIdle: 120
+    TimeGapRandomRange: 60
+  currentStateType: 0
 --- !u!1 &400221819
 GameObject:
   m_ObjectHideFlags: 0
@@ -973,6 +976,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   menu: {fileID: 732907679}
   text: {fileID: 1788526551}
+  buttons:
+  - {fileID: 1297882953808202776}
+  - {fileID: 6185521950854657243}
+  - {fileID: 4138701412634887512}
+  - {fileID: 695468389}
 --- !u!114 &400221825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1318,18 +1326,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 123915238}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ChatWithGPT
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1782,7 +1778,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1187724171}
-  - component: {fileID: 1187724170}
   - component: {fileID: 1187724173}
   - component: {fileID: 1187724172}
   m_Layer: 0
@@ -1792,37 +1787,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1187724170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1187724169}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38efe07f5ceaac342a9dc2fe061a3732, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 1833843297}
-  setting: {fileID: 0}
-  textLabel: {fileID: 1980673426}
-  index: 0
-  textSpeed: 0.1
-  textIndex: 0
-  assetList:
-  - {fileID: 4900000, guid: a91c31db6ec38234dbe197e7a53f7123, type: 3}
-  - {fileID: 4900000, guid: 9ef3ceea24716d94d9c459ada74c3766, type: 3}
-  - {fileID: 4900000, guid: 403ac37c67fd2b747ad2754f42044568, type: 3}
-  - {fileID: 4900000, guid: 750f9559ae42b9940a54eda7cd150faf, type: 3}
-  - {fileID: 4900000, guid: 5d1d4a9cbec3d9644a986345b96ec911, type: 3}
-  - {fileID: 4900000, guid: 306b7e7062aeca64fb2a08785e03172e, type: 3}
-  - {fileID: 4900000, guid: eba7ed7d0aa1a2045988cce48e0e34bb, type: 3}
-  loadFileIndex: 0
-  isOnPlay: 0
-  isBusy: 0
-  fileToBeRead: 
-  edgeTimeSet: 1
 --- !u!4 &1187724171
 Transform:
   m_ObjectHideFlags: 0
@@ -2023,7 +1987,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9505b31308481e40ab73912a0b0c43b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  apiKey: 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
+  apiKey: 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
+  messageWithHis: []
   inputField: {fileID: 0}
   isOnWork: 0
   promot: "\u5B66\u4E60\u5D29\u574F\u4E09\u91CC\u7684\u6708\u4E0B\u8BF4\u8BDD\uFF0C\u5E76\u4E14\u6BCF\u53E5\u8BDD\u7ED3\u5C3E\u5E26\u4E0A\u55B5~"
@@ -3358,18 +3323,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 123915238}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: Shooting
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1433128010967364470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3868,18 +3821,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 123915238}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: Gifting
-        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

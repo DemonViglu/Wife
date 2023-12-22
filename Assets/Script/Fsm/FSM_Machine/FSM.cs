@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+using System.ComponentModel;
 
 public enum StateType
 { 
@@ -17,15 +18,19 @@ public class Parameter
     public EmotionUIManageer emotionManager;
     public PlayerImageManager playerImageManager;
     public GameObject ChatComponent;
+    public MenuControllor menuControllor;
 
     public float TimeGapFromIdle;
+    public float TimeGapRandomRange;
 }
 
 
 public class FSM : MonoBehaviour
 {
     public Parameter parameter;
-    public IState currentState;
+    [ReadOnly]
+    public StateType currentStateType;
+    private IState currentState;
     private Dictionary<StateType,IState> states=new Dictionary<StateType,IState>();
     void Start()
     {
@@ -40,7 +45,6 @@ public class FSM : MonoBehaviour
     void Update()
     {
         currentState.OnUpdate();
-        //TextToDebug();
     }
 
     public void TransitionState(StateType state)
@@ -50,10 +54,14 @@ public class FSM : MonoBehaviour
             currentState.OnExit();
         }
         currentState = states[state];
+        currentStateType = state;
         currentState.OnEnter();
     }
-    private void TextToDebug()
-    {
-        parameter.text.text=Input.mousePosition.x.ToString()+"    "+Input.mousePosition.y.ToString();
-    }
+
+
+
+
+
+
+    
 }

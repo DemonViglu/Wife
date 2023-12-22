@@ -15,7 +15,6 @@ public class Love_State : IState
 
     void IState.OnEnter()
     {
-        GameManager.instance.Gifting();
         Debug.Log("Love_Enter");
     }
 
@@ -32,29 +31,20 @@ public class Love_State : IState
 
     void Gift()
     {
-        if (Input.GetMouseButtonDown(0) && !DialogManager.instance.isOnPlay)
+        if (Input.GetMouseButtonDown(0) && !DialogSystemManager.instance.IsOnMission())
         {
             parameter.playerImageManager.ChangeImage(ImageTpye.shy);
             EnvironmentManager.instance.FlowerBegin();
-            //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 3);
             DialogSystemManager.instance.AddMissionSO(3);
             parameter.emotionManager.ChangeEmotionXP(50);
             if (parameter.emotionManager.GetEmotionXP() >= 80)
             {
-                //DialogManager.instance.PreLoadTheFile(parameter.dialogSetting.autoPlayTime, 6);
                 DialogSystemManager.instance.AddMissionSO(6);
             }
         }
-        //if (DialogManager.instance.JustFinishedPlay())
-        //{
-        //    manager.TransitionState(StateType.Idle);
-        //    parameter.playerImageManager.ChangeImage(ImageTpye.what);
-
-        //}
         if (DialogSystemManager.instance.JustFinishPlay()) {
             manager.TransitionState(StateType.Idle);
             parameter.playerImageManager.ChangeImage(ImageTpye.what);
-
         }
     }
 }

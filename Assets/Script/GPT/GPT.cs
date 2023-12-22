@@ -28,7 +28,7 @@ public class GPT : MonoBehaviour
     public string apiKey = string.Empty;
     private string apiUrl = "https://api.openai.com/v1/chat/completions";
 
-    List<string> messageWithHis = new List<string>();
+    public List<string> messageWithHis = new List<string>();
     public InputField inputField;
     public bool isOnWork;
 

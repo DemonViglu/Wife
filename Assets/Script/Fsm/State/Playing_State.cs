@@ -21,7 +21,6 @@ public class Playing_State : IState
         DialogSystemManager.instance.missionEventHandler._OnEveryMissionEnd += OnBallGameEnd;
         Debug.Log("Playing_Enter");
         parameter.ball.BeginToShoot();
-        GameManager.instance.Shooting();
 
         parameter.playerImageManager.ChangeImage(ImageTpye.what);
     }

@@ -7,17 +7,10 @@ using Unity.Collections;
 using UnityEngine;
 using UnityEngine.XR;
 
-public enum PlayMode
-{
-    Shooting, Gifting, Chat,ChatWithGPT
-        //knowing that i'm the stupid gay, shooot is play, gift is love, chat is idle;
-}
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-
-     public PlayMode currentGame;
-
+    public FSM playerManager;
 
     private void Awake()
     {
@@ -30,7 +23,6 @@ public class GameManager : MonoBehaviour
     }
     private void Start()
     {
-        currentGame = PlayMode.Chat;
         WindowSetInit();
     }
 
@@ -39,32 +31,6 @@ public class GameManager : MonoBehaviour
         DragWife();
     }
 
-    #region ChangeModeInterface
-    public void LoadGame(PlayMode playMode)
-    {
-        instance.currentGame = playMode;
-    }
-
-    public void Shooting()
-    {
-        instance.currentGame = PlayMode.Shooting;
-    }
-
-    public void Gifting()
-    {
-        instance.currentGame= PlayMode.Gifting;
-    }
-
-    public void Chat()
-    {
-        instance.currentGame = PlayMode.Chat;
-    }
-
-    public void ChatWithGPT()
-    {
-        instance.currentGame=PlayMode.ChatWithGPT;
-    }
-    #endregion
 
 
     private bool isDrag;
@@ -97,20 +63,15 @@ public class GameManager : MonoBehaviour
     }
     private IntPtr hwnd;
     public POINT point;
-    /// <summary>
-    /// emmm
-    /// </summary>
     public void DragWife()
     {
 
-        if (isDrag&&currentGame==PlayMode.Chat)
+        if (isDrag&&playerManager.currentStateType==StateType.Idle)
         {
-            //
             //playerTrans.position =new Vector2( Camera.main.ScreenPointToRay(Input.mousePosition).origin.x, Camera.main.ScreenPointToRay(Input.mousePosition).origin.y);
             GetCursorPos(ref point); // 获取鼠标在屏幕上的位置（原点在左上）.而不是鼠标在unity中的位置（原点在左下）
 
             MoveWindow(hwnd, point.X - Screen.width / 2, point.Y - Screen.height / 2, Screen.width, Screen.height, true);
-
 
         }
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -130,8 +91,6 @@ public class GameManager : MonoBehaviour
     {
         hwnd = FindWindow(null, Application.productName);
         point.X = Screen.currentResolution.width;
-
         point.Y = Screen.currentResolution.height;
     }
-
 }

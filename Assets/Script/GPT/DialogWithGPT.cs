@@ -16,7 +16,7 @@ public class DialogWithGPT : MonoBehaviour
         Chat();
     }
 
-    private bool chat = false;
+    private bool chat = true;
     public void Chat()
     {
         if(Input.GetKeyDown(keyCode))
@@ -39,6 +39,7 @@ public class DialogWithGPT : MonoBehaviour
     {
         outputText.text = "";
         outputText.gameObject.SetActive(true);
+        outputText.transform.parent.gameObject.SetActive(true);
         foreach(char ch in text)
         {
             outputText.text += ch;
